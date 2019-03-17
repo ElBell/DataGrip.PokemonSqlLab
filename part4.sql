@@ -31,8 +31,8 @@ FROM
         SELECT pokemon_trainer.trainerID,
                COUNT(*) AS Level_100s,
                COALESCE(
-                     SUM(DISTINCT pokemons.primary_type) + SUM(DISTINCT pokemons.secondary_type),
-                     SUM(DISTINCT pokemons.primary_type)) AS Type_Diversity,
+                     COUNT(DISTINCT pokemons.primary_type) + COUNT(DISTINCT pokemons.secondary_type),
+                     COUNT(DISTINCT pokemons.primary_type)) AS Type_Diversity,
                SUM(maxhp) AS HP_Total
         FROM pokemon_trainer
                JOIN pokemons
