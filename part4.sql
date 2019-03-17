@@ -3,7 +3,10 @@ SELECT PokemonLevelType.pokemon AS Pokemon_Name,
        trainername AS Trainer_Name,
        PokemonLevelType.pokelevel AS Level,
        PokemonLevelType.primary_type AS Primary_Type,
-       PokemonLevelType.secondary_type AS Secondary_Type
+       PokemonLevelType.secondary_type AS Secondary_Type,
+       Level_100s,
+       Type_Diversity,
+       Stats
 FROM
   trainers
     INNER JOIN (
@@ -12,7 +15,7 @@ FROM
            PokemonType.primary_type,
            PokemonType.secondary_type,
            pokemon_trainer.trainerID,
-           TrainerSort.HP_Total,
+           TrainerSort.Stats,
            TrainerSort.Level_100s,
            TrainerSort.Type_Diversity
     FROM
@@ -33,7 +36,7 @@ FROM
                COALESCE(
                      COUNT(DISTINCT pokemons.primary_type) + COUNT(DISTINCT pokemons.secondary_type),
                      COUNT(DISTINCT pokemons.primary_type)) AS Type_Diversity,
-               SUM(maxhp) AS HP_Total
+               SUM(maxhp) + SUM(speed) + SUM(spatk) + SUM(spdef) + SUM(attack) + SUM(defense) AS Stats
         FROM pokemon_trainer
                JOIN pokemons
                     ON pokemon_trainer.pokemon_id = pokemons.id
@@ -45,4 +48,4 @@ FROM
                ON trainers.trainerID = PokemonLevelType.trainerID
 ORDER BY Level_100s DESC ,
          Type_Diversity DESC ,
-         HP_Total DESC
+         Stats DESC
